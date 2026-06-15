@@ -12,6 +12,9 @@ exports.handler = async (event) => {
   try {
     const body = JSON.parse(event.body);
 
+    console.log('API Key present:', !!process.env.NOWPAYMENTS_API_KEY);
+    console.log('Request body:', JSON.stringify(body));
+
     const res = await fetch('https://api.nowpayments.io/v1/payment', {
       method: 'POST',
       headers: {
@@ -29,12 +32,15 @@ exports.handler = async (event) => {
     });
 
     const data = await res.json();
+    console.log('NOWPayments response:', JSON.stringify(data));
+
     return {
       statusCode: 200,
       headers,
       body: JSON.stringify(data)
     };
   } catch (err) {
+    console.log('Error:', err.message);
     return {
       statusCode: 500,
       headers,
