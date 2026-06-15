@@ -207,6 +207,12 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
   .stat-block { border-right: none; border-bottom: 1px solid var(--pitch-border); max-width: 50%; }
   footer { flex-direction: column; gap: 6px; }
 }
+
+/* ── CRYPTO PAYMENT ── */
+.crypto-sel-btn { font-family: var(--mono); font-size: 12px; padding: 7px 16px; border-radius: 4px; border: 1px solid var(--pitch-border); background: var(--pitch-light); color: var(--muted); cursor: pointer; transition: all 0.15s; }
+.crypto-sel-btn:hover { border-color: var(--muted); color: var(--white); }
+.crypto-sel-btn.active-crypto { border-color: var(--acid); color: var(--acid); background: rgba(212,245,60,0.08); font-weight: 700; }
+.active-plan { border-color: var(--acid) !important; }
 </style>
 </head>
 <body>
@@ -242,7 +248,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
   <div class="logo">PitchOracle<sub>WC26</sub></div>
   <div class="nav-right">
     <a href="#demo" class="nav-link">Try free</a>
-    <button class="nav-cta" onclick="scrollToGumroad()">Get full access →</button>
+    <button class="nav-cta" onclick="scrollToGumroad()">Get access →</button>
   </div>
 </nav>
 
@@ -254,7 +260,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <a href="#demo" class="btn-primary">Try a free preview</a>
     <button class="btn-ghost" onclick="scrollToGumroad()">Unlock full tournament access →</button>
   </div>
-  <p class="hero-proof">Tournament pack · <strong>$8 USD</strong> · Pay once via Gumroad · All 104 matches</p>
+  <p class="hero-proof">Tournament pack · <strong>$8 USD</strong> · Pay in crypto · All 104 matches · Instant access</p>
 </section>
 
 <div class="stats-strip">
@@ -424,7 +430,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
         <div class="lock-icon">🔒</div>
         <div class="lock-title">Full analysis locked</div>
         <div class="lock-sub">Unlock the match breakdown, best bet pick, and confidence scores for every World Cup match.</div>
-        <button class="unlock-btn" onclick="scrollToGumroad()">Unlock for $8 →</button>
+        <button class="unlock-btn" onclick="scrollToGumroad()">Unlock for $8 in crypto →</button>
         <div class="unlock-note">One payment · All 104 matches · Via Gumroad</div>
       </div>
     </div>
@@ -445,7 +451,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <div class="feature-card"><div class="feature-icon">🎯</div><div class="feature-title">Confidence scores</div><div class="feature-desc">Know how strongly the model backs each market. Skip the close calls, back the convictions.</div></div>
     <div class="feature-card"><div class="feature-icon">🔑</div><div class="feature-title">Key player watch</div><div class="feature-desc">The one player most likely to decide the match — useful for anytime scorer and assist markets.</div></div>
     <div class="feature-card"><div class="feature-icon">📅</div><div class="feature-title">Real fixtures only</div><div class="feature-desc">Only actual scheduled matches — group stage fixtures are locked to the real draw. No invalid matchups.</div></div>
-    <div class="feature-card"><div class="feature-icon">💳</div><div class="feature-title">Pay once via Gumroad</div><div class="feature-desc">Card or crypto accepted. No subscription. Pay once, access the full tournament through to July 19.</div></div>
+    <div class="feature-card"><div class="feature-icon">💳</div><div class="feature-title">Pay once via Gumroad</div><div class="feature-desc">Pay in USDT, USDC, BTC, ETH or SOL. No account needed. Instant access the moment payment confirms.</div></div>
   </div>
 </section>
 
@@ -454,22 +460,53 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <div class="gumroad-eyebrow">Unlock full access</div>
     <div class="gumroad-title">Back every match with confidence</div>
     <p class="gumroad-sub">One payment covers the entire tournament. Full analysis, best bet picks, and confidence scores for all 104 matches — group stage to the final.</p>
+
     <div class="gumroad-plans">
-      <div class="gumroad-plan">
+      <div class="gumroad-plan" id="planSingle" onclick="selectPlan('single',2)" style="cursor:pointer;">
         <div class="plan-name">Single match</div>
         <div class="plan-price">$2 <sub>USD</sub></div>
         <div class="plan-desc">Full report for one match of your choice</div>
       </div>
-      <div class="gumroad-plan featured">
+      <div class="gumroad-plan featured active-plan" id="planTournament" onclick="selectPlan('tournament',8)" style="cursor:pointer;">
         <div class="plan-badge">Best value</div>
         <div class="plan-name">Full tournament</div>
         <div class="plan-price">$8 <sub>USD</sub></div>
         <div class="plan-desc">All 104 matches, group stage to the final</div>
       </div>
     </div>
-    <!-- REPLACE WITH YOUR GUMROAD PRODUCT URL -->
-    <a href="https://naudem.gumroad.com/l/enfez" class="gumroad-btn" target="_blank" rel="noopener">Get access on Gumroad →</a>
-    <div class="gumroad-note">Secure checkout · Card &amp; crypto accepted · Instant delivery</div>
+
+    <!-- Crypto selector -->
+    <div style="margin-bottom:1.5rem;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Pay with crypto</div>
+      <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
+        <button class="crypto-sel-btn active-crypto" onclick="selectCrypto('usdtbsc','USDT')" id="btn-usdtbsc">USDT</button>
+        <button class="crypto-sel-btn" onclick="selectCrypto('usdccelo','USDC')" id="btn-usdccelo">USDC</button>
+        <button class="crypto-sel-btn" onclick="selectCrypto('btc','BTC')" id="btn-btc">BTC</button>
+        <button class="crypto-sel-btn" onclick="selectCrypto('eth','ETH')" id="btn-eth">ETH</button>
+        <button class="crypto-sel-btn" onclick="selectCrypto('sol','SOL')" id="btn-sol">SOL</button>
+      </div>
+    </div>
+
+    <button class="gumroad-btn" id="payNowBtn" onclick="initiatePayment()">
+      Pay $8 in USDT →
+    </button>
+    <div class="gumroad-note" id="payNote">Crypto payment · Instant access · No account needed</div>
+
+    <!-- Payment status box -->
+    <div id="paymentBox" style="display:none;margin-top:1.5rem;background:var(--pitch-light);border:1px solid var(--pitch-border);border-radius:8px;padding:1.25rem;text-align:left;">
+      <div style="font-family:var(--mono);font-size:10px;color:var(--acid);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">⚡ Payment invoice created</div>
+      <div style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:6px;">Send exactly:</div>
+      <div style="font-size:20px;font-weight:700;font-family:var(--mono);color:var(--white);margin-bottom:12px;" id="cryptoAmount">—</div>
+      <div style="font-size:12px;color:var(--muted);font-family:var(--mono);margin-bottom:6px;">To this address:</div>
+      <div style="font-size:11px;font-family:var(--mono);color:var(--acid);word-break:break-all;background:var(--pitch);padding:10px;border-radius:4px;margin-bottom:10px;" id="cryptoAddress">—</div>
+      <button onclick="copyPayAddr()" style="font-size:11px;color:var(--muted);background:none;border:1px solid var(--pitch-border);border-radius:3px;padding:4px 12px;cursor:pointer;font-family:var(--mono);margin-bottom:14px;" id="copyAddrBtn">Copy address</button>
+      <div style="font-size:12px;color:var(--muted);line-height:1.6;">After sending, access is confirmed automatically. You'll receive an email with your access link to <strong style="color:var(--white);">pitchoracle.uk/pro</strong></div>
+      <div style="margin-top:12px;padding:10px;background:rgba(212,245,60,0.06);border-radius:4px;border:1px solid rgba(212,245,60,0.15);">
+        <div style="font-family:var(--mono);font-size:10px;color:var(--muted);margin-bottom:4px;">PAYMENT STATUS</div>
+        <div style="font-family:var(--mono);font-size:12px;color:var(--acid);" id="payStatus">⏳ Waiting for payment...</div>
+      </div>
+    </div>
+
   </div>
 </section>
 
@@ -734,6 +771,94 @@ homeWin+draw+awayWin must equal exactly 100. Be specific: name real players, rea
     updateBtn();
   }
 }
+
+
+// ── PAYMENT ──
+let selectedAmount = 8;
+let selectedCurrency = 'usdtbsc';
+let selectedCurrencyLabel = 'USDT';
+let pollInterval = null;
+
+function selectPlan(plan, amount) {
+  selectedAmount = amount;
+  document.getElementById('planSingle').style.borderColor = plan === 'single' ? 'var(--acid)' : 'var(--pitch-border)';
+  document.getElementById('planTournament').style.borderColor = plan === 'tournament' ? 'var(--acid)' : 'var(--pitch-border)';
+  document.getElementById('payNowBtn').textContent = `Pay $${amount} in ${selectedCurrencyLabel} →`;
+}
+
+function selectCrypto(currency, label) {
+  selectedCurrency = currency;
+  selectedCurrencyLabel = label;
+  document.querySelectorAll('.crypto-sel-btn').forEach(b => b.classList.remove('active-crypto'));
+  document.getElementById('btn-' + currency).classList.add('active-crypto');
+  document.getElementById('payNowBtn').textContent = `Pay $${selectedAmount} in ${label} →`;
+}
+
+async function initiatePayment() {
+  const btn = document.getElementById('payNowBtn');
+  btn.disabled = true;
+  btn.textContent = 'Creating invoice...';
+
+  try {
+    const res = await fetch('/.netlify/functions/payment', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        price_amount: selectedAmount,
+        price_currency: 'usd',
+        pay_currency: selectedCurrency,
+        order_description: selectedAmount === 8 ? 'PitchOracle Full Tournament' : 'PitchOracle Single Match',
+      })
+    });
+
+    const data = await res.json();
+
+    if (data.payment_id) {
+      document.getElementById('cryptoAmount').textContent = data.pay_amount + ' ' + data.pay_currency.toUpperCase();
+      document.getElementById('cryptoAddress').textContent = data.pay_address;
+      document.getElementById('paymentBox').style.display = 'block';
+      document.getElementById('payNote').style.display = 'none';
+      btn.textContent = 'Invoice created ✓';
+      pollPaymentStatus(data.payment_id);
+    } else {
+      throw new Error('No payment ID returned');
+    }
+  } catch(e) {
+    btn.disabled = false;
+    btn.textContent = `Pay $${selectedAmount} in ${selectedCurrencyLabel} →`;
+    alert('Payment setup failed — please try again or contact support.');
+  }
+}
+
+function copyPayAddr() {
+  const addr = document.getElementById('cryptoAddress').textContent;
+  navigator.clipboard.writeText(addr).then(() => {
+    document.getElementById('copyAddrBtn').textContent = 'Copied!';
+    setTimeout(() => document.getElementById('copyAddrBtn').textContent = 'Copy address', 2000);
+  });
+}
+
+function pollPaymentStatus(paymentId) {
+  let attempts = 0;
+  pollInterval = setInterval(async () => {
+    attempts++;
+    if (attempts > 60) { clearInterval(pollInterval); return; }
+    try {
+      const res = await fetch('/.netlify/functions/payment-status?id=' + paymentId);
+      const data = await res.json();
+      const status = data.payment_status;
+      const statusEl = document.getElementById('payStatus');
+      if (status === 'confirmed' || status === 'finished') {
+        clearInterval(pollInterval);
+        statusEl.textContent = '✅ Payment confirmed! Redirecting...';
+        setTimeout(() => { window.location.href = '/pro'; }, 2000);
+      } else if (status === 'partially_paid') {
+        statusEl.textContent = '⚠ Partial payment received — please send the remainder';
+      } else if (status === 'waiting' || status === 'confirming') {
+        statusEl.textContent = '⏳ Payment detected — confirming on chain...';
+      }
+    } catch(e) {}
+  }, 10000);
+}
+
 </script>
-</body>
-</html>
