@@ -219,28 +219,38 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
 
 <div class="ticker-wrap" aria-hidden="true">
   <div class="ticker-track">
-    <span class="ticker-item">Mexico 2–0 South Africa <span>FT</span></span>
-    <span class="ticker-item">S. Korea 2–1 Czechia <span>FT</span></span>
-    <span class="ticker-item">Germany 7–1 Curaçao <span>FT</span></span>
-    <span class="ticker-item">Netherlands 2–2 Japan <span>FT</span></span>
-    <span class="ticker-item">Sweden 5–1 Tunisia <span>FT</span></span>
-    <span class="ticker-item">Morocco 1–0 Scotland <span>FT</span></span>
-    <span class="ticker-item">Brazil 4–1 Haiti <span>FT</span></span>
-    <span class="ticker-item">USA 4–1 Paraguay <span>FT</span></span>
-    <span class="ticker-item">Australia 2–0 Turkey <span>FT</span></span>
-    <span class="ticker-item">Spain vs Cabo Verde <span>TODAY</span></span>
-    <span class="ticker-item">Belgium vs Egypt <span>TODAY</span></span>
-    <span class="ticker-item">Mexico 2–0 South Africa <span>FT</span></span>
-    <span class="ticker-item">S. Korea 2–1 Czechia <span>FT</span></span>
-    <span class="ticker-item">Germany 7–1 Curaçao <span>FT</span></span>
-    <span class="ticker-item">Netherlands 2–2 Japan <span>FT</span></span>
-    <span class="ticker-item">Sweden 5–1 Tunisia <span>FT</span></span>
-    <span class="ticker-item">Morocco 1–0 Scotland <span>FT</span></span>
-    <span class="ticker-item">Brazil 4–1 Haiti <span>FT</span></span>
-    <span class="ticker-item">USA 4–1 Paraguay <span>FT</span></span>
-    <span class="ticker-item">Australia 2–0 Turkey <span>FT</span></span>
-    <span class="ticker-item">Spain vs Cabo Verde <span>TODAY</span></span>
-    <span class="ticker-item">Belgium vs Egypt <span>TODAY</span></span>
+    <span class="ticker-item">France 3–1 Senegal <span>FT · Group I</span></span>
+    <span class="ticker-item">Norway 4–1 Iraq <span>FT · Group I</span></span>
+    <span class="ticker-item">Argentina 3–0 Algeria <span>FT · Group J</span></span>
+    <span class="ticker-item">Austria 3–1 Jordan <span>FT · Group J</span></span>
+    <span class="ticker-item">Belgium 1–1 Egypt <span>FT · Group G</span></span>
+    <span class="ticker-item">Iran 2–2 New Zealand <span>FT · Group G</span></span>
+    <span class="ticker-item">Spain 0–0 Cape Verde <span>FT · Group H</span></span>
+    <span class="ticker-item">Saudi Arabia 1–1 Uruguay <span>FT · Group H</span></span>
+    <span class="ticker-item">Germany 7–1 Curaçao <span>FT · Group E</span></span>
+    <span class="ticker-item">Ivory Coast 2–1 Ecuador <span>FT · Group E</span></span>
+    <span class="ticker-item">Netherlands 2–2 Japan <span>FT · Group F</span></span>
+    <span class="ticker-item">Sweden 5–1 Tunisia <span>FT · Group F</span></span>
+    <span class="ticker-item">Portugal vs Congo DR <span>TODAY · Group K</span></span>
+    <span class="ticker-item">England vs Croatia <span>TODAY · Group L</span></span>
+    <span class="ticker-item">Ghana vs Panama <span>TODAY · Group L</span></span>
+    <span class="ticker-item">Uzbekistan vs Colombia <span>TODAY · Group K</span></span>
+    <span class="ticker-item">France 3–1 Senegal <span>FT · Group I</span></span>
+    <span class="ticker-item">Norway 4–1 Iraq <span>FT · Group I</span></span>
+    <span class="ticker-item">Argentina 3–0 Algeria <span>FT · Group J</span></span>
+    <span class="ticker-item">Austria 3–1 Jordan <span>FT · Group J</span></span>
+    <span class="ticker-item">Belgium 1–1 Egypt <span>FT · Group G</span></span>
+    <span class="ticker-item">Iran 2–2 New Zealand <span>FT · Group G</span></span>
+    <span class="ticker-item">Spain 0–0 Cape Verde <span>FT · Group H</span></span>
+    <span class="ticker-item">Saudi Arabia 1–1 Uruguay <span>FT · Group H</span></span>
+    <span class="ticker-item">Germany 7–1 Curaçao <span>FT · Group E</span></span>
+    <span class="ticker-item">Ivory Coast 2–1 Ecuador <span>FT · Group E</span></span>
+    <span class="ticker-item">Netherlands 2–2 Japan <span>FT · Group F</span></span>
+    <span class="ticker-item">Sweden 5–1 Tunisia <span>FT · Group F</span></span>
+    <span class="ticker-item">Portugal vs Congo DR <span>TODAY · Group K</span></span>
+    <span class="ticker-item">England vs Croatia <span>TODAY · Group L</span></span>
+    <span class="ticker-item">Ghana vs Panama <span>TODAY · Group L</span></span>
+    <span class="ticker-item">Uzbekistan vs Colombia <span>TODAY · Group K</span></span>
   </div>
 </div>
 
@@ -461,14 +471,9 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <div class="gumroad-title">Back every match with confidence</div>
     <p class="gumroad-sub">One payment covers the entire tournament. Full analysis, best bet picks, and confidence scores for all 104 matches — group stage to the final.</p>
 
-    <div class="gumroad-plans">
-      <div class="gumroad-plan" id="planSingle" onclick="selectPlan('single',2)" style="cursor:pointer;">
-        <div class="plan-name">Single match</div>
-        <div class="plan-price">$2 <sub>USD</sub></div>
-        <div class="plan-desc">Full report for one match of your choice</div>
-      </div>
-      <div class="gumroad-plan featured active-plan" id="planTournament" onclick="selectPlan('tournament',8)" style="cursor:pointer;">
-        <div class="plan-badge">Best value</div>
+    <div class="gumroad-plans" style="grid-template-columns: 1fr; max-width: 280px;">
+      <div class="gumroad-plan featured active-plan" id="planTournament">
+        <div class="plan-badge">Full access</div>
         <div class="plan-name">Full tournament</div>
         <div class="plan-price">$8 <sub>USD</sub></div>
         <div class="plan-desc">All 104 matches, group stage to the final</div>
@@ -479,7 +484,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <div style="margin-bottom:1.5rem;">
       <div style="font-family:var(--mono);font-size:10px;color:var(--muted);letter-spacing:0.1em;text-transform:uppercase;margin-bottom:10px;">Pay with crypto</div>
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
-        <button class="crypto-sel-btn active-crypto" onclick="selectCrypto('usdtbsc','USDT')" id="btn-usdtbsc">USDT</button>
+        <button class="crypto-sel-btn active-crypto" onclick="selectCrypto('usdtbsc','USDT (BSC)')" id="btn-usdtbsc">USDT (BSC)</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('usdccelo','USDC')" id="btn-usdccelo">USDC</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('btc','BTC')" id="btn-btc">BTC</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('eth','ETH')" id="btn-eth">ETH</button>
@@ -488,7 +493,7 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     </div>
 
     <button class="gumroad-btn" id="payNowBtn" onclick="initiatePayment()">
-      Pay $8 in USDT →
+      Pay $8 in USDT (BSC) →
     </button>
     <div class="gumroad-note" id="payNote">Crypto payment · Instant access · No account needed</div>
 
@@ -574,32 +579,32 @@ const GROUPS = {
     ['Japan','Tunisia', false, null]
   ]},
   G: { teams:'Belgium · Iran · Egypt · New Zealand', fixtures:[
-    ['Belgium','Egypt', false, null],
-    ['Iran','New Zealand', false, null],
+    ['Belgium','Egypt', true, '1–1'],
+    ['Iran','New Zealand', true, '2–2'],
     ['Belgium','Iran', false, null],
     ['Egypt','New Zealand', false, null],
     ['Belgium','New Zealand', false, null],
     ['Iran','Egypt', false, null]
   ]},
   H: { teams:'Spain · Uruguay · Saudi Arabia · Cape Verde', fixtures:[
-    ['Spain','Cape Verde', false, null],
-    ['Saudi Arabia','Uruguay', false, null],
+    ['Spain','Cape Verde', true, '0–0'],
+    ['Saudi Arabia','Uruguay', true, '1–1'],
     ['Spain','Saudi Arabia', false, null],
     ['Uruguay','Cape Verde', false, null],
     ['Spain','Uruguay', false, null],
     ['Saudi Arabia','Cape Verde', false, null]
   ]},
   I: { teams:'France · Senegal · Norway · Iraq', fixtures:[
-    ['France','Senegal', false, null],
-    ['Iraq','Norway', false, null],
+    ['France','Senegal', true, '3–1'],
+    ['Iraq','Norway', true, '1–4'],
     ['France','Norway', false, null],
     ['Senegal','Iraq', false, null],
     ['France','Iraq', false, null],
     ['Senegal','Norway', false, null]
   ]},
   J: { teams:'Argentina · Austria · Algeria · Jordan', fixtures:[
-    ['Argentina','Algeria', false, null],
-    ['Austria','Jordan', false, null],
+    ['Argentina','Algeria', true, '3–0'],
+    ['Austria','Jordan', true, '3–1'],
     ['Argentina','Austria', false, null],
     ['Algeria','Jordan', false, null],
     ['Argentina','Jordan', false, null],
@@ -774,17 +779,10 @@ homeWin+draw+awayWin must equal exactly 100. Be specific: name real players, rea
 
 
 // ── PAYMENT ──
-let selectedAmount = 8;
+const selectedAmount = 8;
 let selectedCurrency = 'usdtbsc';
-let selectedCurrencyLabel = 'USDT';
+let selectedCurrencyLabel = 'USDT (BSC)';
 let pollInterval = null;
-
-function selectPlan(plan, amount) {
-  selectedAmount = amount;
-  document.getElementById('planSingle').style.borderColor = plan === 'single' ? 'var(--acid)' : 'var(--pitch-border)';
-  document.getElementById('planTournament').style.borderColor = plan === 'tournament' ? 'var(--acid)' : 'var(--pitch-border)';
-  document.getElementById('payNowBtn').textContent = `Pay $${amount} in ${selectedCurrencyLabel} →`;
-}
 
 function selectCrypto(currency, label) {
   selectedCurrency = currency;
@@ -793,6 +791,7 @@ function selectCrypto(currency, label) {
   document.getElementById('btn-' + currency).classList.add('active-crypto');
   document.getElementById('payNowBtn').textContent = `Pay $${selectedAmount} in ${label} →`;
 }
+
 
 async function initiatePayment() {
   const btn = document.getElementById('payNowBtn');
@@ -807,7 +806,7 @@ async function initiatePayment() {
         price_amount: selectedAmount,
         price_currency: 'usd',
         pay_currency: selectedCurrency,
-        order_description: selectedAmount === 8 ? 'PitchOracle Full Tournament' : 'PitchOracle Single Match',
+        order_description: 'PitchOracle Full Tournament',
       })
     });
 
@@ -862,3 +861,5 @@ function pollPaymentStatus(paymentId) {
 }
 
 </script>
+</body>
+</html>
