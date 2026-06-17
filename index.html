@@ -486,7 +486,6 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
       <div style="display:flex;gap:8px;justify-content:center;flex-wrap:wrap;">
         <button class="crypto-sel-btn active-crypto" onclick="selectCrypto('usdtbsc','USDT (BSC)')" id="btn-usdtbsc">USDT (BSC)</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('usdccelo','USDC')" id="btn-usdccelo">USDC</button>
-        <button class="crypto-sel-btn" onclick="selectCrypto('btc','BTC')" id="btn-btc">BTC</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('eth','ETH')" id="btn-eth">ETH</button>
         <button class="crypto-sel-btn" onclick="selectCrypto('sol','SOL')" id="btn-sol">SOL</button>
       </div>
@@ -819,13 +818,15 @@ async function initiatePayment() {
       document.getElementById('payNote').style.display = 'none';
       btn.textContent = 'Invoice created ✓';
       pollPaymentStatus(data.payment_id);
+    } else if (data.code === 'AMOUNT_MINIMAL_ERROR') {
+      throw new Error(`${selectedCurrencyLabel} has a higher minimum than $${selectedAmount} — please try USDT, USDC, ETH or SOL instead.`);
     } else {
       throw new Error('No payment ID returned');
     }
   } catch(e) {
     btn.disabled = false;
     btn.textContent = `Pay $${selectedAmount} in ${selectedCurrencyLabel} →`;
-    alert('Payment setup failed — please try again or contact support.');
+    alert(e.message && e.message.includes('minimum') ? e.message : 'Payment setup failed — please try again or contact support.');
   }
 }
 
