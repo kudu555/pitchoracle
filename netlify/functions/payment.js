@@ -26,7 +26,7 @@ exports.handler = async (event) => {
         price_currency: body.price_currency || 'usd',
         pay_currency: body.pay_currency || 'usdtbsc',
         order_description: body.order_description || 'PitchOracle Access',
-        success_url: 'https://pitchoracle.uk/pro',
+        success_url: 'https://pitchoracle.uk/pitchpro',
         cancel_url: 'https://pitchoracle.uk'
       })
     });
