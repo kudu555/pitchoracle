@@ -1,0 +1,3 @@
+User-agent: *
+Disallow: /pitchpro
+Disallow: /pitchpro.html
