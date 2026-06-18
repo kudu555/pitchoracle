@@ -129,6 +129,9 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .report-paid.visible { display: block; }
 .paid-section-label { font-size: 10px; color: var(--acid); font-family: var(--mono); letter-spacing: 0.1em; text-transform: uppercase; margin-bottom: 10px; margin-top: 1.25rem; }
 .paid-section-label:first-child { margin-top: 0; }
+.score-predict-box { display: flex; align-items: center; justify-content: center; gap: 1.25rem; background: var(--pitch-light); border: 1px solid var(--pitch-border); border-radius: 6px; padding: 1rem 1.25rem; }
+.score-predict-team { font-size: 14px; font-weight: 500; color: var(--white); flex: 1; text-align: center; }
+.score-predict-num { font-family: var(--mono); font-size: 26px; font-weight: 700; color: var(--acid); letter-spacing: 0.02em; white-space: nowrap; }
 .analysis-box { background: var(--pitch-light); border-radius: 5px; padding: 14px; margin-bottom: 0; }
 .analysis-box p { font-size: 14px; line-height: 1.75; color: var(--white); }
 .factors-row { display: flex; flex-wrap: wrap; gap: 6px; }
@@ -399,6 +402,13 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
     <div class="report-paid" id="paidSection">
       <div class="paid-section-label">Match analysis</div>
       <div class="analysis-box"><p id="paidAnalysis">—</p></div>
+
+      <div class="paid-section-label" style="margin-top:1.25rem;">Predicted full-time score</div>
+      <div class="score-predict-box">
+        <span class="score-predict-team" id="scoreTeam1">—</span>
+        <span class="score-predict-num" id="scoreFT">— – —</span>
+        <span class="score-predict-team" id="scoreTeam2">—</span>
+      </div>
 
       <div class="paid-section-label" style="margin-top:1.25rem;">Key factors</div>
       <div class="factors-row" id="paidFactors"></div>
@@ -694,6 +704,12 @@ homeWin+draw+awayWin must equal exactly 100. Be specific: name real players, rea
 
     // Populate paid section (hidden behind lock in demo)
     document.getElementById('paidAnalysis').textContent = d.analysis;
+
+    document.getElementById('scoreTeam1').textContent = t1;
+    document.getElementById('scoreTeam2').textContent = t2;
+    const scoreParts = (d.predictedScore || '—').split(/[-–]/).map(s => s.trim());
+    document.getElementById('scoreFT').textContent = scoreParts.length === 2 ? `${scoreParts[0]} – ${scoreParts[1]}` : d.predictedScore;
+
     const facWrap = document.getElementById('paidFactors');
     facWrap.innerHTML = '';
     (d.factors || []).forEach(f => {
