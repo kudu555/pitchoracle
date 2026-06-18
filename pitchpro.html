@@ -72,6 +72,13 @@ nav { display: flex; align-items: center; justify-content: space-between; paddin
 .fixture-display { background: var(--pitch-light); border: 1px solid var(--pitch-border); border-radius: 6px; padding: 14px 16px; margin-bottom: 1rem; display: none; }
 .fixture-display.visible { display: block; }
 .fixture-label { font-size: 10px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 10px; }
+.fixture-date-group { font-size: 11px; color: var(--muted); font-family: var(--mono); letter-spacing: 0.06em; text-transform: uppercase; margin: 14px 0 6px; }
+.fixture-date-group:first-child { margin-top: 0; }
+.fixture-date-group.today-label { color: var(--acid); }
+.show-more-btn { width: 100%; background: var(--pitch-light); border: 1px solid var(--pitch-border); color: var(--muted); font-family: var(--mono); font-size: 12px; padding: 10px; border-radius: 4px; cursor: pointer; margin-top: 10px; transition: all 0.15s; }
+.show-more-btn:hover { border-color: var(--muted); color: var(--white); }
+.results-toggle { font-family: var(--mono); font-size: 12px; color: var(--muted); cursor: pointer; padding: 14px 0 8px; user-select: none; transition: color 0.15s; }
+.results-toggle:hover { color: var(--white); }
 .fixture-list { display: flex; flex-direction: column; gap: 6px; }
 
 /* Fixture buttons - three states */
@@ -270,8 +277,8 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
 
 <section class="demo-section" id="demo">
   <div class="section-header">
-    <span class="section-tag">Live demo</span>
-    <span class="section-title">Try a match prediction</span>
+    <span class="section-tag">Full access</span>
+    <span class="section-title">Analyse any match</span>
   </div>
 
   <div class="match-selector">
@@ -282,28 +289,14 @@ footer { border-top: 1px solid var(--pitch-border); padding: 1.5rem 2rem; displa
 
     <!-- GROUP STAGE -->
     <div id="gsPanel">
-      <div class="gs-selectors">
-        <div class="sel-col">
-          <label>Group</label>
-          <select id="groupSel" onchange="updateFixtures()">
-            <option value="">Select a group...</option>
-            <option value="A">Group A</option><option value="B">Group B</option>
-            <option value="C">Group C</option><option value="D">Group D</option>
-            <option value="E">Group E</option><option value="F">Group F</option>
-            <option value="G">Group G</option><option value="H">Group H</option>
-            <option value="I">Group I</option><option value="J">Group J</option>
-            <option value="K">Group K</option><option value="L">Group L</option>
-          </select>
-        </div>
-        <div class="sel-col">
-          <label>Teams in group</label>
-          <div class="group-teams-hint" id="groupTeamsHint">Select a group first</div>
-        </div>
+      <div class="fixture-label" style="margin-bottom:10px;">Upcoming fixtures — select a match to analyse</div>
+      <div class="fixture-list" id="upcomingList"></div>
+      <button class="show-more-btn" id="showMoreBtn" onclick="showMoreFixtures()" style="display:none;">Show more fixtures</button>
+
+      <div class="results-toggle" id="resultsToggle" onclick="toggleResults()">
+        <span id="resultsToggleLabel">▸ Recent results</span>
       </div>
-      <div class="fixture-display" id="fixtureDisplay">
-        <div class="fixture-label">Select a fixture — grayed out games have already been played</div>
-        <div class="fixture-list" id="fixtureList"></div>
-      </div>
+      <div class="fixture-list" id="resultsList" style="display:none;"></div>
     </div>
 
     <!-- KNOCKOUT -->
@@ -484,107 +477,103 @@ function scrollToGumroad() { document.getElementById('gumroad-anchor').scrollInt
 // ── FIXTURE DATA ──
 // "played" = result already known as of June 15 2026
 // Format: [team1, team2, played, result_string]
-const GROUPS = {
-  A: { teams:'Mexico · South Korea · South Africa · Czechia', fixtures:[
-    ['Mexico','South Korea', true, '2–1'],
-    ['South Africa','Czechia', true, '0–1'],
-    ['Mexico','South Africa', false, null],
-    ['South Korea','Czechia', false, null],
-    ['Mexico','Czechia', false, null],
-    ['South Korea','South Africa', false, null]
-  ]},
-  B: { teams:'Canada · Switzerland · Qatar · Bosnia & Herz.', fixtures:[
-    ['Canada','Bosnia & Herz.', true, '1–1'],
-    ['Switzerland','Qatar', true, '1–1'],
-    ['Canada','Qatar', false, null],
-    ['Switzerland','Bosnia & Herz.', false, null],
-    ['Canada','Switzerland', false, null],
-    ['Qatar','Bosnia & Herz.', false, null]
-  ]},
-  C: { teams:'Brazil · Morocco · Scotland · Haiti', fixtures:[
-    ['Brazil','Morocco', false, null],
-    ['Scotland','Haiti', false, null],
-    ['Brazil','Scotland', false, null],
-    ['Morocco','Haiti', false, null],
-    ['Brazil','Haiti', true, '4–1'],
-    ['Morocco','Scotland', true, '1–0']
-  ]},
-  D: { teams:'USA · Australia · Paraguay · Turkey', fixtures:[
-    ['USA','Paraguay', true, '4–1'],
-    ['Australia','Turkey', true, '2–0'],
-    ['USA','Australia', false, null],
-    ['Paraguay','Turkey', false, null],
-    ['USA','Turkey', false, null],
-    ['Australia','Paraguay', false, null]
-  ]},
-  E: { teams:'Germany · Ecuador · Ivory Coast · Curaçao', fixtures:[
-    ['Germany','Curaçao', true, '7–1'],
-    ['Ivory Coast','Ecuador', true, '2–1'],
-    ['Germany','Ecuador', false, null],
-    ['Ivory Coast','Curaçao', false, null],
-    ['Germany','Ivory Coast', false, null],
-    ['Ecuador','Curaçao', false, null]
-  ]},
-  F: { teams:'Netherlands · Japan · Tunisia · Sweden', fixtures:[
-    ['Netherlands','Japan', true, '2–2'],
-    ['Sweden','Tunisia', true, '5–1'],
-    ['Netherlands','Tunisia', false, null],
-    ['Japan','Sweden', false, null],
-    ['Netherlands','Sweden', false, null],
-    ['Japan','Tunisia', false, null]
-  ]},
-  G: { teams:'Belgium · Iran · Egypt · New Zealand', fixtures:[
-    ['Belgium','Egypt', false, null],
-    ['Iran','New Zealand', false, null],
-    ['Belgium','Iran', false, null],
-    ['Egypt','New Zealand', false, null],
-    ['Belgium','New Zealand', false, null],
-    ['Iran','Egypt', false, null]
-  ]},
-  H: { teams:'Spain · Uruguay · Saudi Arabia · Cape Verde', fixtures:[
-    ['Spain','Cape Verde', false, null],
-    ['Saudi Arabia','Uruguay', false, null],
-    ['Spain','Saudi Arabia', false, null],
-    ['Uruguay','Cape Verde', false, null],
-    ['Spain','Uruguay', false, null],
-    ['Saudi Arabia','Cape Verde', false, null]
-  ]},
-  I: { teams:'France · Senegal · Norway · Iraq', fixtures:[
-    ['France','Senegal', false, null],
-    ['Iraq','Norway', false, null],
-    ['France','Norway', false, null],
-    ['Senegal','Iraq', false, null],
-    ['France','Iraq', false, null],
-    ['Senegal','Norway', false, null]
-  ]},
-  J: { teams:'Argentina · Austria · Algeria · Jordan', fixtures:[
-    ['Argentina','Algeria', false, null],
-    ['Austria','Jordan', false, null],
-    ['Argentina','Austria', false, null],
-    ['Algeria','Jordan', false, null],
-    ['Argentina','Jordan', false, null],
-    ['Algeria','Austria', false, null]
-  ]},
-  K: { teams:'Portugal · Colombia · Uzbekistan · Congo DR', fixtures:[
-    ['Portugal','Uzbekistan', false, null],
-    ['Colombia','Congo DR', false, null],
-    ['Portugal','Colombia', false, null],
-    ['Uzbekistan','Congo DR', false, null],
-    ['Portugal','Congo DR', false, null],
-    ['Colombia','Uzbekistan', false, null]
-  ]},
-  L: { teams:'England · Croatia · Panama · Ghana', fixtures:[
-    ['England','Croatia', false, null],
-    ['Ghana','Panama', false, null],
-    ['England','Ghana', false, null],
-    ['Croatia','Panama', false, null],
-    ['England','Panama', false, null],
-    ['Croatia','Ghana', false, null]
-  ]}
-};
+const FIXTURES = [
+  // Already played (matchday 1 & 2 as of June 18)
+  { date:'2026-06-11', t1:'Mexico', t2:'South Africa', group:'A', played:true, result:'2–0' },
+  { date:'2026-06-11', t1:'South Korea', t2:'Czechia', group:'A', played:true, result:'2–1' },
+  { date:'2026-06-12', t1:'Canada', t2:'Bosnia & Herz.', group:'B', played:true, result:'1–1' },
+  { date:'2026-06-12', t1:'Switzerland', t2:'Qatar', group:'B', played:true, result:'1–1' },
+  { date:'2026-06-13', t1:'Brazil', t2:'Morocco', group:'C', played:true, result:'1–1' },
+  { date:'2026-06-13', t1:'Scotland', t2:'Haiti', group:'C', played:true, result:'1–0' },
+  { date:'2026-06-14', t1:'USA', t2:'Paraguay', group:'D', played:true, result:'4–1' },
+  { date:'2026-06-14', t1:'Australia', t2:'Turkey', group:'D', played:true, result:'2–0' },
+  { date:'2026-06-14', t1:'Germany', t2:'Curaçao', group:'E', played:true, result:'7–1' },
+  { date:'2026-06-14', t1:'Ivory Coast', t2:'Ecuador', group:'E', played:true, result:'2–1' },
+  { date:'2026-06-15', t1:'Netherlands', t2:'Japan', group:'F', played:true, result:'2–2' },
+  { date:'2026-06-15', t1:'Sweden', t2:'Tunisia', group:'F', played:true, result:'5–1' },
+  { date:'2026-06-15', t1:'Belgium', t2:'Egypt', group:'G', played:true, result:'1–1' },
+  { date:'2026-06-15', t1:'Iran', t2:'New Zealand', group:'G', played:true, result:'2–2' },
+  { date:'2026-06-15', t1:'Spain', t2:'Cape Verde', group:'H', played:true, result:'0–0' },
+  { date:'2026-06-15', t1:'Saudi Arabia', t2:'Uruguay', group:'H', played:true, result:'1–1' },
+  { date:'2026-06-16', t1:'France', t2:'Senegal', group:'I', played:true, result:'3–1' },
+  { date:'2026-06-16', t1:'Norway', t2:'Iraq', group:'I', played:true, result:'4–1' },
+  { date:'2026-06-16', t1:'Argentina', t2:'Algeria', group:'J', played:true, result:'3–0' },
+  { date:'2026-06-16', t1:'Austria', t2:'Jordan', group:'J', played:true, result:'3–1' },
+  { date:'2026-06-17', t1:'Portugal', t2:'Congo DR', group:'K', played:true, result:'1–1' },
+  { date:'2026-06-17', t1:'Uzbekistan', t2:'Colombia', group:'K', played:true, result:'1–3' },
+  { date:'2026-06-17', t1:'England', t2:'Croatia', group:'L', played:true, result:'4–2' },
+  { date:'2026-06-17', t1:'Ghana', t2:'Panama', group:'L', played:true, result:'1–0' },
+
+  // Upcoming — matchday 2 continued
+  { date:'2026-06-18', t1:'Czechia', t2:'South Africa', group:'A', played:false },
+  { date:'2026-06-18', t1:'Mexico', t2:'South Korea', group:'A', played:false },
+  { date:'2026-06-18', t1:'Switzerland', t2:'Bosnia & Herz.', group:'B', played:false },
+  { date:'2026-06-18', t1:'Canada', t2:'Qatar', group:'B', played:false },
+  { date:'2026-06-19', t1:'Scotland', t2:'Morocco', group:'C', played:false },
+  { date:'2026-06-19', t1:'Brazil', t2:'Haiti', group:'C', played:false },
+  { date:'2026-06-19', t1:'USA', t2:'Australia', group:'D', played:false },
+  { date:'2026-06-20', t1:'Turkey', t2:'Paraguay', group:'D', played:false },
+  { date:'2026-06-20', t1:'Netherlands', t2:'Sweden', group:'F', played:false },
+  { date:'2026-06-20', t1:'Germany', t2:'Ivory Coast', group:'E', played:false },
+  { date:'2026-06-20', t1:'Ecuador', t2:'Curaçao', group:'E', played:false },
+  { date:'2026-06-21', t1:'Tunisia', t2:'Japan', group:'F', played:false },
+  { date:'2026-06-21', t1:'Spain', t2:'Saudi Arabia', group:'H', played:false },
+  { date:'2026-06-21', t1:'Belgium', t2:'Iran', group:'G', played:false },
+  { date:'2026-06-21', t1:'Uruguay', t2:'Cape Verde', group:'H', played:false },
+  { date:'2026-06-21', t1:'New Zealand', t2:'Egypt', group:'G', played:false },
+  { date:'2026-06-22', t1:'Argentina', t2:'Austria', group:'J', played:false },
+  { date:'2026-06-22', t1:'France', t2:'Iraq', group:'I', played:false },
+  { date:'2026-06-22', t1:'Norway', t2:'Senegal', group:'I', played:false },
+  { date:'2026-06-22', t1:'Jordan', t2:'Algeria', group:'J', played:false },
+  { date:'2026-06-23', t1:'Portugal', t2:'Uzbekistan', group:'K', played:false },
+  { date:'2026-06-23', t1:'England', t2:'Ghana', group:'L', played:false },
+  { date:'2026-06-23', t1:'Panama', t2:'Croatia', group:'L', played:false },
+  { date:'2026-06-23', t1:'Colombia', t2:'Congo DR', group:'K', played:false },
+
+  // Matchday 3 — final group games
+  { date:'2026-06-24', t1:'Switzerland', t2:'Canada', group:'B', played:false },
+  { date:'2026-06-24', t1:'Bosnia & Herz.', t2:'Qatar', group:'B', played:false },
+  { date:'2026-06-24', t1:'Scotland', t2:'Brazil', group:'C', played:false },
+  { date:'2026-06-24', t1:'Morocco', t2:'Haiti', group:'C', played:false },
+  { date:'2026-06-24', t1:'Czechia', t2:'Mexico', group:'A', played:false },
+  { date:'2026-06-24', t1:'South Africa', t2:'South Korea', group:'A', played:false },
+  { date:'2026-06-25', t1:'Ecuador', t2:'Germany', group:'E', played:false },
+  { date:'2026-06-25', t1:'Curaçao', t2:'Ivory Coast', group:'E', played:false },
+  { date:'2026-06-25', t1:'Japan', t2:'Sweden', group:'F', played:false },
+  { date:'2026-06-25', t1:'Tunisia', t2:'Netherlands', group:'F', played:false },
+  { date:'2026-06-25', t1:'Turkey', t2:'USA', group:'D', played:false },
+  { date:'2026-06-25', t1:'Paraguay', t2:'Australia', group:'D', played:false },
+  { date:'2026-06-26', t1:'Norway', t2:'France', group:'I', played:false },
+  { date:'2026-06-26', t1:'Senegal', t2:'Iraq', group:'I', played:false },
+  { date:'2026-06-26', t1:'Cape Verde', t2:'Saudi Arabia', group:'H', played:false },
+  { date:'2026-06-26', t1:'Uruguay', t2:'Spain', group:'H', played:false },
+  { date:'2026-06-26', t1:'Egypt', t2:'Iran', group:'G', played:false },
+  { date:'2026-06-26', t1:'New Zealand', t2:'Belgium', group:'G', played:false },
+  { date:'2026-06-27', t1:'Panama', t2:'England', group:'L', played:false },
+  { date:'2026-06-27', t1:'Croatia', t2:'Ghana', group:'L', played:false },
+  { date:'2026-06-27', t1:'Colombia', t2:'Portugal', group:'K', played:false },
+  { date:'2026-06-27', t1:'Congo DR', t2:'Uzbekistan', group:'K', played:false },
+  { date:'2026-06-27', t1:'Jordan', t2:'Argentina', group:'J', played:false },
+  { date:'2026-06-27', t1:'Algeria', t2:'Austria', group:'J', played:false }
+];
 
 let currentStage = 'group';
 let selectedFixture = null;
+let upcomingShown = 10;
+let resultsExpanded = false;
+
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+
+function formatDateLabel(dateStr) {
+  const today = todayStr();
+  if (dateStr === today) return 'Today';
+  const d = new Date(dateStr + 'T00:00:00');
+  const opts = { weekday: 'short', month: 'short', day: 'numeric' };
+  return d.toLocaleDateString('en-US', opts);
+}
 
 function setStage(stage, btn) {
   currentStage = stage;
@@ -598,28 +587,65 @@ function setStage(stage, btn) {
   document.getElementById('apiNotice').classList.remove('visible');
 }
 
-function updateFixtures() {
-  const g = document.getElementById('groupSel').value;
-  const fd = document.getElementById('fixtureDisplay');
-  const fl = document.getElementById('fixtureList');
-  const hint = document.getElementById('groupTeamsHint');
-  if (!g) { fd.classList.remove('visible'); hint.textContent = 'Select a group first'; selectedFixture = null; updateBtn(); return; }
-  const grp = GROUPS[g];
-  hint.textContent = grp.teams;
-  fl.innerHTML = '';
-  grp.fixtures.forEach((fix) => {
-    const [t1, t2, played, result] = fix;
+function renderFixtureList() {
+  const today = todayStr();
+  const upcoming = FIXTURES.filter(f => !f.played).sort((a,b) => a.date.localeCompare(b.date));
+  const results = FIXTURES.filter(f => f.played).sort((a,b) => b.date.localeCompare(a.date));
+
+  // Upcoming list (today's games pinned first, then chronological)
+  const upcomingList = document.getElementById('upcomingList');
+  upcomingList.innerHTML = '';
+  const toShow = upcoming.slice(0, upcomingShown);
+  let lastDate = null;
+  toShow.forEach((fix) => {
+    if (fix.date !== lastDate) {
+      const dateHeader = document.createElement('div');
+      const isToday = fix.date === today;
+      dateHeader.className = 'fixture-date-group' + (isToday ? ' today-label' : '');
+      dateHeader.textContent = (isToday ? '● ' : '') + formatDateLabel(fix.date);
+      upcomingList.appendChild(dateHeader);
+      lastDate = fix.date;
+    }
     const btn = document.createElement('button');
-    btn.className = 'fixture-btn' + (played ? ' played' : '');
-    btn.disabled = played;
-    let metaText = played ? `FT ${result}` : `Group ${g} · upcoming`;
-    btn.innerHTML = `<span>${t1} vs ${t2}</span><span class="fixture-meta">${metaText}</span>`;
-    if (!played) btn.onclick = () => selectFixture(t1, t2, btn);
-    fl.appendChild(btn);
+    btn.className = 'fixture-btn';
+    btn.innerHTML = `<span>${fix.t1} vs ${fix.t2}</span><span class="fixture-meta">Group ${fix.group}</span>`;
+    btn.onclick = () => selectFixture(fix.t1, fix.t2, btn);
+    upcomingList.appendChild(btn);
   });
-  fd.classList.add('visible');
-  selectedFixture = null;
-  updateBtn();
+
+  document.getElementById('showMoreBtn').style.display = upcomingShown < upcoming.length ? 'block' : 'none';
+
+  // Results list (collapsed by default)
+  const resultsList = document.getElementById('resultsList');
+  resultsList.innerHTML = '';
+  let lastResultDate = null;
+  results.forEach((fix) => {
+    if (fix.date !== lastResultDate) {
+      const dateHeader = document.createElement('div');
+      dateHeader.className = 'fixture-date-group';
+      dateHeader.textContent = formatDateLabel(fix.date);
+      resultsList.appendChild(dateHeader);
+      lastResultDate = fix.date;
+    }
+    const btn = document.createElement('button');
+    btn.className = 'fixture-btn played';
+    btn.disabled = true;
+    btn.innerHTML = `<span>${fix.t1} vs ${fix.t2}</span><span class="fixture-meta">FT ${fix.result}</span>`;
+    resultsList.appendChild(btn);
+  });
+
+  document.getElementById('resultsToggleLabel').textContent = (resultsExpanded ? '▾ ' : '▸ ') + `Recent results (${results.length})`;
+}
+
+function showMoreFixtures() {
+  upcomingShown += 10;
+  renderFixtureList();
+}
+
+function toggleResults() {
+  resultsExpanded = !resultsExpanded;
+  document.getElementById('resultsList').style.display = resultsExpanded ? 'block' : 'none';
+  renderFixtureList();
 }
 
 function selectFixture(t1, t2, btn) {
@@ -628,6 +654,8 @@ function selectFixture(t1, t2, btn) {
   selectedFixture = {t1, t2};
   updateBtn();
 }
+
+renderFixtureList();
 
 function updateBtn() {
   const btn = document.getElementById('analyseBtn');
